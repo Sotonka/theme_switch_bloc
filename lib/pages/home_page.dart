@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:theme_switch_bloc/app_themes.dart';
 import 'package:theme_switch_bloc/bloc/theme_bloc.dart';
+import 'package:theme_switch_bloc/services/theme_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,16 +24,19 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     if (state.themeData == appThemeData[AppTheme.LightTheme]) {
                       currentTheme = AppTheme.values[1];
+                      ThemeDatabaseService.putThemeSettings(1);
                     } else {
                       currentTheme = AppTheme.values[0];
+                      ThemeDatabaseService.putThemeSettings(0);
                     }
-                    BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(
-                      theme: currentTheme,
-                    ));
+
+                    context
+                        .read<ThemeBloc>()
+                        .add(ThemeChanged(theme: currentTheme));
                   },
                   icon: state.themeData == appThemeData[AppTheme.LightTheme]
-                      ? Icon(Icons.sunny)
-                      : Icon(Icons.mode_night),
+                      ? const Icon(Icons.sunny)
+                      : const Icon(Icons.mode_night),
                 ),
               ],
             ),
